@@ -50,7 +50,7 @@ The four adjacent digits in the 1000-digit number that have the greatest product
 Find the thirteen adjacent digits in the 1000-digit number that have the greatest product. What is the value of this product?
 
 ## Ключевые элементы реализации с минимальными комментариями
--- хвостовая рекурсия
+__хвостовая рекурсия__
 ```
 solution1 = p8_1 position 0
     where 
@@ -63,7 +63,7 @@ solution1 = p8_1 position 0
 ```
 В данном случае мы накапливаем в m максимальное число, проходясь по всем подстрокам, а потом возвращаем его
 
--- рекурсия
+__рекурсия__
 ```
 solution2 = p8_2 position 0
     where
@@ -76,13 +76,13 @@ solution2 = p8_2 position 0
 ```
 Здесь у нас функция возвращает либо m либо произведение чисел подстроки в зависимости от того, что из этого больше
 
--- модульная реализация
+__модульная реализация__
 ```
 solution3 = foldl1 max (map product wantedSubstrings)
 ```
 Функция свертки применяется к функции max, что позволяет нам выбрать 1 самое большое число произведений чисел подстрок из его списка
 
--- генерация последовательности при помощи отображения (map)
+__генерация последовательности при помощи отображения (map)__
 ```
 a = map product (wantedSubstrings)
 p8_4 n m
@@ -94,7 +94,7 @@ solution4 = p8_4 position 0
 ```
 Это решение схоже с решением 1, однако в данном случае мы сначала получаем список произведений чисел подстрок, а затем уже проходимся по нему хвостовой рекурсией
 
--- работа с бесконечными списками для языков поддерживающих ленивые коллекции или итераторы как часть языка
+__работа с бесконечными списками для языков поддерживающих ленивые коллекции или итераторы как часть языка__
 ```
 p8_5 = (takeWhile (\n -> and (product (n) > product (last p8_5), n /= last wantedSubstrings)) wantedSubstrings)
 solution5 = foldl1 max (map product p8_5)
@@ -111,23 +111,23 @@ As 12 is the smallest abundant number, 1 + 2 + 3 + 4 + 6 = 16, the smallest numb
 Find the sum of all the positive integers which cannot be written as the sum of two abundant numbers.
 
 ## Ключевые элементы реализации с минимальными комментариями
--- хвостовая рекурсия
+__хвостовая рекурсия__
+```
+skipped due to solution structure
 ```
 
+__рекурсия__
+```
+skipped due to solution structure
 ```
 
--- рекурсия
-```
-
-```
-
--- модульная реализация
+__модульная реализация__
 ```
 abundantNos n = filter (\n -> sumProperDivisors n > n) [1..n] 
 ```
 В данном пункте числа от 1 до n фильтруются в соответствии с функцией sumProperDivisors, которая сравнивается с самим числом n
 
--- генерация последовательности при помощи отображения (map)
+__генерация последовательности при помощи отображения (map)__
 ```
 sumProperDivisors n 
   | n == 1    = 0
@@ -137,7 +137,7 @@ sumProperDivisors n
 ```
 функция concatmap - склейка функций concat и map, что в данном случае позволяет нам сразу склеить результаты одобранных пар по правилу ```if x /= y then [x,y] else [x]```
 
--- работа с бесконечными списками для языков поддерживающих ленивые коллекции или итераторы как часть языка
+__работа с бесконечными списками для языков поддерживающих ленивые коллекции или итераторы как часть языка__
 ```
 forM_ abNos $ \m -> do
         let xs = takeWhile (\a -> m + a <= maxNo) $ dropWhile (< m) abNos
