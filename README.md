@@ -61,6 +61,7 @@ solution1 = p8_1 position 0
                 where
                     curr_sum = product (wantedSubstrings !! n)
 ```
+В данном случае мы накапливаем в m максимальное число, проходясь по всем подстрокам, а потом возвращаем его
 
 -- рекурсия
 ```
@@ -73,11 +74,13 @@ solution2 = p8_2 position 0
             else p8_2(n+1)(m)
         else m
 ```
+Здесь у нас функция возвращает либо m либо произведение чисел подстроки в зависимости от того, что из этого больше
 
 -- модульная реализация
 ```
 solution3 = foldl1 max (map product wantedSubstrings)
 ```
+Функция свертки применяется к функции max, что позволяет нам выбрать 1 самое большое число произведений чисел подстрок из его списка
 
 -- генерация последовательности при помощи отображения (map)
 ```
@@ -89,12 +92,14 @@ p8_4 n m
 
 solution4 = p8_4 position 0
 ```
+Это решение схоже с решением 1, однако в данном случае мы сначала получаем список произведений чисел подстрок, а затем уже проходимся по нему хвостовой рекурсией
 
 -- работа с бесконечными списками для языков поддерживающих ленивые коллекции или итераторы как часть языка
 ```
 p8_5 = (takeWhile (\n -> and (product (n) > product (last p8_5), n /= last wantedSubstrings)) wantedSubstrings)
 solution5 = foldl1 max (map product p8_5)
 ```
+В данном решении мы получаем массив значений ```product (n) > product (last p8_5)```, а затем из него выбираем самое большое
 
 #### Problem 23
 A perfect number is a number for which the sum of its proper divisors is exactly equal to the number. For example, the sum of the proper divisors of 28 would be 1 + 2 + 4 + 7 + 14 = 28, which means that 28 is a perfect number.
@@ -106,3 +111,36 @@ As 12 is the smallest abundant number, 1 + 2 + 3 + 4 + 6 = 16, the smallest numb
 Find the sum of all the positive integers which cannot be written as the sum of two abundant numbers.
 
 ## Ключевые элементы реализации с минимальными комментариями
+-- хвостовая рекурсия
+```
+
+```
+
+-- рекурсия
+```
+
+```
+
+-- модульная реализация
+```
+abundantNos n = filter (\n -> sumProperDivisors n > n) [1..n] 
+```
+В данном пункте числа от 1 до n фильтруются в соответствии с функцией sumProperDivisors, которая сравнивается с самим числом n
+
+-- генерация последовательности при помощи отображения (map)
+```
+sumProperDivisors n 
+  | n == 1    = 0
+  | otherwise = sum factors - n
+    where 
+        factors = concatMap (\(x,y)-> if x /= y then [x,y] else [x]) $ factorPairs n
+```
+функция concatmap - склейка функций concat и map, что в данном случае позволяет нам сразу склеить результаты одобранных пар по правилу ```if x /= y then [x,y] else [x]```
+
+-- работа с бесконечными списками для языков поддерживающих ленивые коллекции или итераторы как часть языка
+```
+forM_ abNos $ \m -> do
+        let xs = takeWhile (\a -> m + a <= maxNo) $ dropWhile (< m) abNos
+        forM_ xs $ \n -> writeArray arr (m + n) False
+```
+мы сначала берем все элементы abNos, что >= m, а затем отбираем из них по правилу ```m + a <= maxNo```
