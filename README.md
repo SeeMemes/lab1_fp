@@ -51,6 +51,7 @@ Find the thirteen adjacent digits in the 1000-digit number that have the greates
 
 ## Ключевые элементы реализации с минимальными комментариями
 -- хвостовая рекурсия
+```
 solution1 = p8_1 position 0
     where 
         p8_1 n m
@@ -59,8 +60,10 @@ solution1 = p8_1 position 0
             = p8_1 (n + 1) (max m curr_sum)
                 where
                     curr_sum = product (wantedSubstrings !! n)
+```
 
 -- рекурсия
+```
 solution2 = p8_2 position 0
     where
         p8_2 n m = if n < 987 
@@ -69,11 +72,15 @@ solution2 = p8_2 position 0
             then p8_2(n+1)(product (wantedSubstrings !! n))
             else p8_2(n+1)(m)
         else m
+```
 
 -- модульная реализация
+```
 solution3 = foldl1 max (map product wantedSubstrings)
+```
 
 -- генерация последовательности при помощи отображения (map)
+```
 a = map product (wantedSubstrings)
 p8_4 n m
     | n == 987 = m
@@ -81,10 +88,13 @@ p8_4 n m
     = p8_4 (n + 1) (max m (a!!n))
 
 solution4 = p8_4 position 0
+```
 
 -- работа с бесконечными списками для языков поддерживающих ленивые коллекции или итераторы как часть языка
+```
 p8_5 = (takeWhile (\n -> and (product (n) > product (last p8_5), n /= last wantedSubstrings)) wantedSubstrings)
 solution5 = foldl1 max (map product p8_5)
+```
 
 #### Problem 23
 A perfect number is a number for which the sum of its proper divisors is exactly equal to the number. For example, the sum of the proper divisors of 28 would be 1 + 2 + 4 + 7 + 14 = 28, which means that 28 is a perfect number.
