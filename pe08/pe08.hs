@@ -44,7 +44,7 @@ p8_4 n m
 solution4 = p8_4 position 0
 
 -- работа с бесконечными списками для языков поддерживающих ленивые коллекции или итераторы как часть языка
-p8_5 = (takeWhile (\n -> and (product (n) > product (last p8_5), n /= last wantedSubstrings)) wantedSubstrings)
+p8_5 = (takeWhile (\n -> and (product (n) > product (last p8_5), n /= last wantedSubstrings)) wantedSubstrings) 
 solution5 = foldl1 max (map product p8_5)
 
 main = putStrLn (show solution5)

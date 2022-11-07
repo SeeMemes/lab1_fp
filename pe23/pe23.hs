@@ -1,28 +1,27 @@
 import Data.List
-import Data.Array.ST
-import Control.Monad.ST
-import Control.Monad
-import Data.Array.Unboxed
+import Data.IntSet (toList, fromList)
+import Data.Array
 
-maxNo = 28123
+primes = 2:filter isPrime [3,5..]
+isPrime = null . tail . primeFactors
+primeFactors n = factor n primes
+    where
+    factor n (p:ps)
+        | p * p > n = [n]
+        | mod n p == 0 = p:factor (div n p) (p:ps)
+        | otherwise = factor n ps
 
-obtainNonAbundantSums abNos= runSTUArray $ do
-    arr <- newArray (1, maxNo) True
-    forM_ abNos $ \m -> do
-        let xs = takeWhile (\a -> m + a <= maxNo) $ dropWhile (< m) abNos
-        forM_ xs $ \n -> writeArray arr (m + n) False
-    return arr
+sigma = product . map ((+1) . foldl1 (\a x -> x+a*x)) . group . primeFactors
+aliquot n = sigma n - n
 
-abundantNos n = filter (\n -> sumProperDivisors n > n) [1..n] 
+maxN = 28123
 
-sumProperDivisors n 
-  | n == 1    = 0
-  | otherwise = sum factors - n
-    where 
-        factors = concatMap (\(x,y)-> if x /= y then [x,y] else [x]) $ factorPairs n
-     
-factorPairs x = [ (y, x `div` y) | y <- [1..truncate (sqrt (fromIntegral x))], x `mod` y == 0]
+isAbundants = listArray (1,maxN) $ map (\n -> aliquot n > n) [1..maxN]
+isAbundant x = isAbundants ! x
+abundantNumbers = filter isAbundant [1..maxN]
 
-euler23 = sum [x | (x, True) <- (assocs . obtainNonAbundantSums) $ abundantNos maxNo]
+solution = sum [x | x <- [1..maxN], f x] 
+    where f x = null [() | a <- ns x, isAbundant (x-a)]
+ns x = takeWhile (\a -> a <= div x 2) abundantNumbers
 
-main = putStrLn (show euler23)
+main = putStrLn $ show solution

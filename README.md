@@ -118,32 +118,30 @@ skipped due to solution structure
 
 __рекурсия__
 ```
-skipped due to solution structure
+factor n (p:ps)
+        | p * p > n = [n]
+        | mod n p == 0 = p:factor (div n p) (p:ps)
+        | otherwise = factor n ps
 ```
+Здесь мы смотрим, имеет ли число делитель и если имеет, то мы его раскладываем, пока не найдем простой делитель
 
 __модульная реализация__
 ```
-abundantNos n = filter (\n -> sumProperDivisors n > n) [1..n] 
+ns x = takeWhile (\a -> a <= div x 2) abundantNumbers
 ```
-В данном пункте числа от 1 до n фильтруются в соответствии с функцией sumProperDivisors, которые затем сравниваются с самим числом n
+В данной строчке перебираются все числа, сумма делителей которых больше самих чисел и смотрится, делятся ли эти числа на 2
 
 __генерация последовательности при помощи отображения (map)__
 ```
-sumProperDivisors n 
-  | n == 1    = 0
-  | otherwise = sum factors - n
-    where 
-        factors = concatMap (\(x,y)-> if x /= y then [x,y] else [x]) $ factorPairs n
+sigma = product . map ((+1) . foldl1 (\a x -> x+a*x)) . group . primeFactors
 ```
-функция concatmap - склейка функций concat и map, что в данном случае позволяет нам сразу склеить результаты одобранных пар по правилу ```if x /= y then [x,y] else [x]```
+функция sigma - произведение списка вычисленных по формуле ```x+a*x``` полученных группированных простых чисел
 
 __работа с бесконечными списками для языков поддерживающих ленивые коллекции или итераторы как часть языка__
 ```
-forM_ abNos $ \m -> do
-        let xs = takeWhile (\a -> m + a <= maxNo) $ dropWhile (< m) abNos
-        forM_ xs $ \n -> writeArray arr (m + n) False
+primes = 2:filter isPrime [3,5..]
 ```
-мы сначала берем все элементы abNos, что >= m, а затем отбираем из них по правилу ```m + a <= maxNo```
+В данном бесконечном цикле мы просто перебираем простые числа
 
 ## Выводы
 
